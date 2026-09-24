@@ -6,6 +6,7 @@ import {voiceApiVitePlugin} from './server/vitePlugin.ts';
 
 export default defineConfig(() => {
   return {
+    base: './',
     plugins: [react(), tailwindcss(), voiceApiVitePlugin()],
     resolve: {
       alias: {

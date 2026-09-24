@@ -130,6 +130,22 @@ export default function App() {
       });
 
       if (!res.ok) {
+        if (res.status === 404) {
+          // Static host detected (e.g., GitHub Pages without a backend server)
+          // Gracefully fallback to browser Male US speech synthesis
+          speakWithBrowser(text.trim(), {
+            rate: speed,
+            pitch: selectedVoice.id === 'marcus-fenrir' ? 0.75 : 0.95,
+            onEnd: () => setIsPlaying(false),
+          });
+          setIsPlaying(true);
+          setSuccessNotice(
+            `Speaking via in-browser US Male voice! (Note: GitHub Pages is a static host. To use 24kHz Gemini AI voices, deploy to a platform with a backend like Vercel or Render).`
+          );
+          setIsGenerating(false);
+          return;
+        }
+
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.error || `Voice synthesis failed with code ${res.status}`);
       }
